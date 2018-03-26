@@ -1,5 +1,6 @@
 package com.wedoqa.chromedriver_crash_issue.page;
 
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -24,9 +25,15 @@ public class GmailPage extends BasePageObject{
 
     public void clickSignOut(){
     	logger.debug("Click on the profile icon");
-    	waitForElementToAppear(profileIcon).click();
+    	waitForElementToAppear(profileIcon).click();    	
     	logger.debug("Click on the sign out button");
         waitForElementToAppear(signOutLink).click();
+        if (isAlertPresent()){
+        	Alert alert = waitForAlert();
+        	logger.debug("An alert appeared with text: " + alert.getText());
+        	alert.accept();
+        }
+        
         waitForElementToAppear(By.xpath(".//h1[contains(text(),'Hi chromedriver')]"));
     }
    

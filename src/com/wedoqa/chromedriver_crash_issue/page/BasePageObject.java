@@ -1,6 +1,8 @@
 package com.wedoqa.chromedriver_crash_issue.page;
 
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
@@ -84,4 +86,30 @@ public class BasePageObject extends LoadableComponent<BasePageObject> {
 		 throw new AssertionError("Element did not appear: " + element);
 	 }
 	 
+	 protected Alert waitForAlert() {
+		 int timeout = 0;
+		 while (timeout < 20) {
+			 try {
+				 waitFor(500);
+				 return driver.switchTo().alert();
+			 } catch (NoAlertPresentException e) {
+				 timeout++;
+			 } catch (Exception e) {
+				 e.printStackTrace();
+				 throw new AssertionError("Unexpected exception happened when" + " the test waited for an alert dialog");
+			 }
+		 }
+
+		 throw new AssertionError("The alert dialog did not appear in 10 seconds");
+	 }
+
+	 //TODO fix visibility
+	 public boolean isAlertPresent() {
+		 try {
+			 driver.switchTo().alert();
+			 return true;
+		 } catch (NoAlertPresentException e) {
+			 return false;
+		 }
+	 }
 }
